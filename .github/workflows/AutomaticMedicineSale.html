@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>药材提取器</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            padding: 0 10px;
+        }
+        .container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 600px;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        textarea {
+            width: 100%;
+            height: 150px;
+            margin-bottom: 20px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            resize: none;
+        }
+        button {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .copy-button {
+            background-color: #28a745; /* 设置按钮背景色 */
+            width: 80px; /* 设置按钮的宽度 */
+            height: 30px; /* 设置按钮的高度 */
+            font-size: 14px; /* 设置按钮文字的字体大小 */
+            line-height: 5px; /* 设置按钮文字的行高，确保文字垂直居中 */
+            border-radius: 3px; /* 设置按钮的圆角半径 */
+            cursor: pointer; /* 设置鼠标悬停时显示为手形光标 */
+            border: none; /* 去除按钮的边框 */
+            margin-left: 10px; /* 设置按钮左侧的外边距 */
+            text-align: center; /* 设置按钮文字水平居中 */
+            color: #fff; /* 设置按钮文字的颜色为白色 */
+        }
+        .copy-button:hover {
+            background-color: #218838;
+        }
+        .item {
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .item span {
+            white-space: nowrap;
+        }
+        .notification {
+            display: none;
+            padding: 10px;
+            margin-top: 10px;
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+            border-radius: 4px;
+            text-align: center;
+        }
+        @media (max-width: 600px) {
+            .container {
+                padding: 10px;
+            }
+            button {
+                padding: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>药材提取器</h1>
+    <textarea id="inputArea" placeholder="请输入药材信息..."></textarea>
+    <button id="extractButton">提取</button>
+    <div id="outputArea"></div>
+    <div id="notification" class="notification">复制成功</div>
+</div>
+<script>
+    const herbsShengXi = [
+        ["火精枣", "地黄参", "宁心草", "凝血草", "红绫草", "恒心草"],
+        ["五柳根", "天元果", "蛇涎果", "风灵花", "伏龙参"],
+        ["紫猴花", "九叶芝", "幻心草", "鬼臼草"],
+        ["血莲精", "鸡冠草", "银精芝", "玉髓芝"],
+        ["地心火芝", "天蝉灵叶", "雪玉骨参", "腐骨灵花"],
+        ["三叶青芝", "七彩月兰", "三尾风叶", "冰灵焰草"],
+        ["地心淬灵乳", "天麻翡石精", "八角玄冰草", "奇茸通天菊"],
+        ["檀芒九叶花", "坎水玄冰果"],
+        ["剑魄竹笋", "明心问道果"]
+    ];
+
+    const herbsNonShengXi = [
+        ["罗犀草", "天青花", "银月花", "宁神花", "剑芦", "七星草"],
+        ["何首乌", "夜交藤", "夏枯草", "百草露", "凌风花", "补天芝"],
+        ["轻灵草", "龙葵", "弗兰草", "玄参", "枫香脂", "炼魂珠", "玄冰花", "炼血珠"],
+        ["菩提花", "乌稠木", "雪凝花", "龙纹草", "石龙芮", "锦地罗", "冰灵果", "玉龙参"],
+        ["天灵果", "灯心草", "穿心莲", "龙鳞果", "伴妖草", "剑心竹", "绝魂草", "月灵花"],
+        ["白沉脂", "苦曼藤", "血菩提", "诱妖草", "混元果", "皇龙花", "天剑笋", "黑天麻"],
+        ["天问花", "渊血冥花", "芒焰果", "问道花", "血玉竹", "肠蚀草", "凤血果", "冰精芝"],
+        ["阴阳黄泉花", "厉魂血珀", "浩淼水藤", "道蕴花", "狼桃", "霸王花", "太清玄灵草", "冥胎骨"],
+        ["太乙碧莹花", "森檀木", "炼心芝", "重元换血草", "地龙干", "龙须藤", "鬼面花", "梧桐木"]
+    ];
+
+    const pricesShengXi = [1000000, 1200000, 1900000, 2300000, 2700000, 3200000, 3600000, 4000000, 4400000];
+    const pricesNonShengXi = [0, 0, 1500000, 1900000, 2300000, 2800000, 3200000, 3600000, 4000000];
+    const specialHerbs = ["木灵三针花", "鎏鑫天晶草", "离火梧桐芝", "尘磊岩麟果"];
+    const specialPrices = [5000000, 5000000, 6000000, 6000000];
+
+    document.getElementById('extractButton').addEventListener('click', () => {
+        const inputText = document.getElementById('inputArea').value;
+        const outputHTML = extractHerbPrices(inputText);
+        document.getElementById('outputArea').innerHTML = outputHTML;
+    });
+
+    function extractHerbPrices(text) {
+        const herbPrices = [];
+        const namePattern = /名字：([^\n]+)/g;
+        const quantityPattern = /拥有数量:(\d+)/g;
+
+        let nameMatch;
+        let quantityMatch;
+
+        while ((nameMatch = namePattern.exec(text)) !== null && (quantityMatch = quantityPattern.exec(text)) !== null) {
+            const herbName = nameMatch[1];
+            const quantity = parseInt(quantityMatch[1]);
+            let price = 0;
+
+            let found = false;
+
+            for (let i = 0; i < specialHerbs.length; i++) {
+                if (specialHerbs[i] === herbName) {
+                    price = specialPrices[i];
+                    found = true;
+                    break;
+                }
+            }
+
+            if (!found) {
+                for (let i = 0; i < herbsShengXi.length; i++) {
+                    for (const herb of herbsShengXi[i]) {
+                        if (herb === herbName) {
+                            price = pricesShengXi[i];
+                            found = true;
+                            break;
+                        }
+                    }
+                    if (found) break;
+                }
+            }
+
+            if (!found) {
+                for (let i = 0; i < herbsNonShengXi.length; i++) {
+                    for (const herb of herbsNonShengXi[i]) {
+                        if (herb === herbName) {
+                            price = pricesNonShengXi[i];
+                            found = true;
+                            break;
+                        }
+                    }
+                    if (found) break;
+                }
+            }
+
+            herbPrices.push(new HerbPrice(herbName, price, quantity));
+        }
+
+        herbPrices.sort((a, b) => b.price - a.price);
+
+        let result = '';
+        for (const herbPrice of herbPrices) {
+            const priceText = herbPrice.price > 0 ? `坊市上架 ${herbPrice.name} ${herbPrice.price} ${herbPrice.quantity}` : `炼金 ${herbPrice.name} ${herbPrice.quantity}`;
+            result += `
+                    <div class="item">
+                        <span>${priceText}</span>
+                        <button class="copy-button" onclick="copyToClipboard('${priceText}')">复制</button>
+                    </div>
+                `;
+        }
+
+        return result;
+    }
+
+    function copyToClipboard(text) {
+        // 创建一个临时的文本域来辅助复制操作
+        const tempTextArea = document.createElement('textarea');
+        tempTextArea.value = text;
+        document.body.appendChild(tempTextArea);
+
+        // 选择并复制文本
+        tempTextArea.select();
+        document.execCommand('copy');
+
+        // 移除临时文本域
+        document.body.removeChild(tempTextArea);
+
+        // 显示复制成功提示
+        const notification = document.getElementById('notification');
+        notification.style.display = 'block';
+        setTimeout(() => {
+            notification.style.display = 'none';
+        }, 2000);
+    }
+
+    function showNotification(message) {
+        const notification = document.getElementById('notification');
+        notification.textContent = message;
+        notification.style.display = 'block';
+        setTimeout(() => {
+            notification.style.display = 'none';
+        }, 2000); // 2秒后隐藏提示
+    }
+
+    class HerbPrice {
+        constructor(name, price, quantity) {
+            this.name = name;
+            this.price = price;
+            this.quantity = quantity;
+        }
+    }
+</script>
+</body>
+</html>

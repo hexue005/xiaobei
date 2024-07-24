@@ -142,7 +142,7 @@
 
     function extractHerbPrices(text) {
         const herbPrices = [];
-        const namePattern = /名字：([^\n]+)/g;
+        const namePattern = /名字：([^ ]+)/g;
         const quantityPattern = /拥有数量:(\d+)/g;
 
         let nameMatch;

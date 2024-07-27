@@ -22,6 +22,7 @@
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             width: 100%;
             max-width: 600px;
+            position: relative;
         }
         h1 {
             text-align: center;
@@ -63,6 +64,7 @@
             margin-left: 10px;
             text-align: center;
             color: #fff;
+            display: inline-block;
         }
         .copy-button:hover {
             background-color: #218838;
@@ -83,6 +85,19 @@
             button {
                 padding: 10px;
             }
+        }
+        #notification {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #28a745;
+            color: #fff;
+            padding: 10px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+            display: none;
         }
     </style>
 </head>
@@ -279,29 +294,20 @@
         if (!notification) {
             notification = document.createElement('div');
             notification.id = 'notification';
-            notification.style.position = 'absolute';
-            notification.style.bottom = '20px';
-            notification.style.left = '50%';
-            notification.style.transform = 'translateX(-50%)';
-            notification.style.backgroundColor = '#28a745';
-            notification.style.color = '#fff';
-            notification.style.padding = '10px';
-            notification.style.borderRadius = '5px';
-            notification.style.boxShadow = '0 0 10px rgba(0, 0, 0, 0.2)';
-            notification.style.zIndex = '1000';
             document.body.appendChild(notification);
         }
         notification.textContent = message;
         notification.style.display = 'block';
         setTimeout(() => {
             notification.style.display = 'none';
-        }, 2000); // 2秒后隐藏提示
+        }, 2000);
     }
 
     document.getElementById('process-button').addEventListener('click', function () {
         const userInputText = document.getElementById('user-input').value;
         extractInfo(userInputText);
     });
+
 </script>
 </body>
 </html>

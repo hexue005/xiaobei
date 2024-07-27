@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="zh">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>药材提取器</title>
+    <title>信息提取</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -54,15 +54,15 @@
         .copy-button {
             background-color: #28a745;
             width: 80px;
-            height: 30px; 
-            font-size: 14px; 
+            height: 30px;
+            font-size: 14px;
             line-height: 5px;
-            border-radius: 3px; 
-            cursor: pointer; 
+            border-radius: 3px;
+            cursor: pointer;
             border: none;
             margin-left: 10px;
             text-align: center;
-            color: #fff; 
+            color: #fff;
         }
         .copy-button:hover {
             background-color: #218838;
@@ -76,16 +76,6 @@
         .item span {
             white-space: nowrap;
         }
-        .notification {
-            display: none;
-            padding: 10px;
-            margin-top: 10px;
-            background-color: #d4edda;
-            color: #155724;
-            border: 1px solid #c3e6cb;
-            border-radius: 4px;
-            text-align: center;
-        }
         @media (max-width: 600px) {
             .container {
                 padding: 10px;
@@ -98,137 +88,209 @@
 </head>
 <body>
 <div class="container">
-    <h1>药材提取器</h1>
-    <textarea id="inputArea" placeholder="请输入药材信息..."></textarea>
-    <button id="extractButton">提取</button>
-    <div id="outputArea"></div>
-    <div id="notification" class="notification">复制成功</div>
+    <h1>信息提取</h1>
+    <textarea id="user-input" placeholder="请输入数据..."></textarea>
+    <button id="process-button">提取</button>
+
+    <h2>药材信息</h2>
+    <div id="herb-info"></div>
+
+    <h2>炼金内容</h2>
+    <div id="alchemy-info"></div>
 </div>
+
 <script>
-    const herbsShengXi = [
-        ["火精枣", "地黄参", "宁心草", "凝血草", "红绫草", "恒心草", "罗犀草", "天青花", "银月花", "宁神花", "剑芦", "七星草"],
-        ["五柳根", "天元果", "流莹草", "蛇涎果", "风灵花", "伏龙参", "何首乌", "夜交藤", "夏枯草", "百草露", "凌风花", "补天芝"],
-        ["紫猴花", "九叶芝", "幻心草", "鬼臼草"],
-        ["血莲精", "鸡冠草", "银精芝", "玉髓芝"],
-        ["地心火芝", "天蝉灵叶", "雪玉骨参", "腐骨灵花"],
-        ["三叶青芝", "七彩月兰", "三尾风叶", "冰灵焰草"],
-        ["地心淬灵乳", "天麻翡石精", "八角玄冰草", "奇茸通天菊"],
-        ["檀芒九叶花", "坎水玄冰果"],
-        ["剑魄竹笋", "明心问道果"]
-    ];
+    function extractInfo(text) {
+        // 药材提取相关信息
+        const herbsShengXi = [
+            ["火精枣", "地黄参", "宁心草", "凝血草", "红绫草", "恒心草", "罗犀草", "天青花", "银月花", "宁神花", "剑芦", "七星草"],
+            ["五柳根", "天元果", "流莹草", "蛇涎果", "风灵花", "伏龙参", "何首乌", "夜交藤", "夏枯草", "百草露", "凌风花", "补天芝"],
+            ["紫猴花", "九叶芝", "幻心草", "鬼臼草"],
+            ["血莲精", "鸡冠草", "银精芝", "玉髓芝"],
+            ["地心火芝", "天蝉灵叶", "雪玉骨参", "腐骨灵花"],
+            ["三叶青芝", "七彩月兰", "三尾风叶", "冰灵焰草"],
+            ["地心淬灵乳", "天麻翡石精", "八角玄冰草", "奇茸通天菊"],
+            ["檀芒九叶花", "坎水玄冰果"],
+            ["剑魄竹笋", "明心问道果"]
+        ];
 
-    const herbsNonShengXi = [
-        ["轻灵草", "龙葵", "弗兰草", "玄参", "枫香脂", "炼魂珠", "玄冰花", "炼血珠"],
-        ["菩提花", "乌稠木", "雪凝花", "龙纹草", "石龙芮", "锦地罗", "冰灵果", "玉龙参"],
-        ["天灵果", "灯心草", "穿心莲", "龙鳞果", "伴妖草", "剑心竹", "绝魂草", "月灵花"],
-        ["白沉脂", "苦曼藤", "血菩提", "诱妖草", "混元果", "皇龙花", "天剑笋", "黑天麻"],
-        ["天问花", "渊血冥花", "芒焰果", "问道花", "血玉竹", "肠蚀草", "凤血果", "冰精芝"],
-        ["阴阳黄泉花", "厉魂血珀", "浩淼水藤", "道蕴花", "狼桃", "霸王花", "太清玄灵草", "冥胎骨"],
-        ["太乙碧莹花", "森檀木", "炼心芝", "重元换血草", "地龙干", "龙须藤", "鬼面花", "梧桐木"]
-    ];
+        const herbsNonShengXi = [
+            ["轻灵草", "龙葵", "弗兰草", "玄参", "枫香脂", "炼魂珠", "玄冰花", "炼血珠"],
+            ["菩提花", "乌稠木", "雪凝花", "龙纹草", "石龙芮", "锦地罗", "冰灵果", "玉龙参"],
+            ["天灵果", "灯心草", "穿心莲", "龙鳞果", "伴妖草", "剑心竹", "绝魂草", "月灵花"],
+            ["白沉脂", "苦曼藤", "血菩提", "诱妖草", "混元果", "皇龙花", "天剑笋", "黑天麻"],
+            ["天问花", "渊血冥花", "芒焰果", "问道花", "血玉竹", "肠蚀草", "凤血果", "冰精芝"],
+            ["阴阳黄泉花", "厉魂血珀", "浩淼水藤", "道蕴花", "狼桃", "霸王花", "太清玄灵草", "冥胎骨"],
+            ["太乙碧莹花", "森檀木", "炼心芝", "重元换血草", "地龙干", "龙须藤", "鬼面花", "梧桐木"]
+        ];
 
-    const pricesShengXi = [1000000, 1200000, 1900000, 2300000, 2700000, 3200000, 3600000, 4000000, 4400000];
-    const pricesNonShengXi = [1500000, 1900000, 2300000, 2800000, 3200000, 3600000, 4000000];
-    const specialHerbs = ["木灵三针花", "鎏鑫天晶草", "离火梧桐芝", "尘磊岩麟果"];
-    const specialPrices = [5000000, 5000000, 6000000, 6000000];
+        const pricesShengXi = [1000000, 1200000, 1900000, 2300000, 2700000, 3200000, 3600000, 4000000, 4400000];
+        const pricesNonShengXi = [1500000, 1900000, 2300000, 2800000, 3200000, 3600000, 4000000];
+        const specialHerbs = ["木灵三针花", "鎏鑫天晶草", "离火梧桐芝", "尘磊岩麟果"];
+        const specialPrices = [5000000, 5000000, 6000000, 6000000];
 
-    document.getElementById('extractButton').addEventListener('click', () => {
-        const inputText = document.getElementById('inputArea').value;
-        const outputHTML = extractHerbPrices(inputText);
-        document.getElementById('outputArea').innerHTML = outputHTML;
-    });
+        // 炼金神通功法
+        const alchemySkills = [
+            "灵光印", "落石阵", "真金印", "化尘剑法", "三昧真火", "截脉", "竹山剑法", "碎剑诀", "灵体印", "五毒摄魂阵",
+            "矢神刺", "摧血掌", "降魔锁骨阵", "鹤喙针", "祭血罩", "苍云荫月", "寸芒", "月华流照", "开山诀", "离火绝炎",
+            "凝水归流", "怒水天殇", "炙炎轮回", "血魂煞", "天星若雨", "金虹贯日", "都天烈火仙阵", "惊涛剑诀", "灵息术",
+            "拟剑", "归元剑气", "分金印", "九转游身剑", "五行颠倒术", "万剑诀", "星微神灭诀", "大吞焰术", "万剑归宗",
+            "鳖住", "鳖鳖住", "鳖鳖鳖住", "鳖鳖鳖鳖住", "鳖鳖鳖鳖鳖住", "鳖鳖鳖鳖鳖鳖住", "鳖鳖鳖鳖鳖鳖鳖住",
+            "鳖鳖鳖鳖鳖鳖鳖鳖住", "鳖鳖鳖鳖鳖鳖鳖鳖鳖住", "鳖鳖鳖鳖鳖鳖鳖鳖鳖鳖住",
+        ];
+        const alchemyTechniques = [
+            "度难医经", "吞天魔功", "无始经", "不灭天功", "天罗真功", "紫阳天书", "太上化龙真诀", "元磁神光", "玄清天衍录",
+            "太上化龙诀", "玄武吐纳术", "煮海诀", "万尘归灵诀", "万象诀", "三阳玄火变", "神威录", "朝元御金诀", "太乙玄功",
+            "大罗千幻诀", "玄阳哺焰诀", "太阴六虚功", "百兵寂滅诀", "焚心诀", "浑天术", "五藏炼尘功", "混元引气诀", "混元尘引录",
+            "龟息术", "紫阳混元劲", "九龙引雷诀", "幻影神行诀", "天星润水诀", "水灵妙法", "流光真诀", "三才化甲诀", "地元炼体功",
+            "万木诀", "重水普渡诀", "化焰诀", "弄焰诀", "怒涛诀", "沛然决", "练体术", "真阳功", "七杀剑诀", "禾山经", "烈焰诀",
+            "幽魂录", "魑魅鬼卷", "吐纳功法", "冰心诀", "游神御水诀", "聚尘诀", "飞云劲", "浪击决", "上青诀", "天晶诀"
+        ];
 
-    function extractHerbPrices(text) {
-        const herbPrices = [];
         const namePattern = /名字：([^\n]+?)(?=\s+品级：|$)/g;
         const quantityPattern = /拥有数量:(\d+)/g;
 
-        let nameMatch;
-        let quantityMatch;
+        function extractHerbPrices(text) {
+            const herbPrices = [];
+            const namePattern = /名字：([^\n]+?)(?=\s+品级：|$)/g;
+            const quantityPattern = /拥有数量:(\d+)/g;
 
-        while ((nameMatch = namePattern.exec(text)) !== null && (quantityMatch = quantityPattern.exec(text)) !== null) {
-            const herbName = nameMatch[1];
-            const quantity = parseInt(quantityMatch[1]);
-            let price = 0;
+            let nameMatch;
+            let quantityMatch;
 
-            let found = false;
+            while ((nameMatch = namePattern.exec(text)) !== null && (quantityMatch = quantityPattern.exec(text)) !== null) {
+                const herbName = nameMatch[1];
+                const quantity = parseInt(quantityMatch[1]);
+                let price = 0;
 
-            for (let i = 0; i < specialHerbs.length; i++) {
-                if (specialHerbs[i] === herbName) {
-                    price = specialPrices[i];
-                    found = true;
-                    break;
-                }
-            }
+                let found = false;
 
-            if (!found) {
-                for (let i = 0; i < herbsShengXi.length; i++) {
-                    for (const herb of herbsShengXi[i]) {
-                        if (herb === herbName) {
-                            price = pricesShengXi[i];
-                            found = true;
-                            break;
-                        }
+                for (let i = 0; i < specialHerbs.length; i++) {
+                    if (specialHerbs[i] === herbName) {
+                        price = specialPrices[i];
+                        found = true;
+                        break;
                     }
-                    if (found) break;
                 }
-            }
 
-            if (!found) {
-                for (let i = 0; i < herbsNonShengXi.length; i++) {
-                    for (const herb of herbsNonShengXi[i]) {
-                        if (herb === herbName) {
-                            price = pricesNonShengXi[i];
-                            found = true;
-                            break;
+                if (!found) {
+                    for (let i = 0; i < herbsShengXi.length; i++) {
+                        for (const herb of herbsShengXi[i]) {
+                            if (herb === herbName) {
+                                price = pricesShengXi[i];
+                                found = true;
+                                break;
+                            }
                         }
+                        if (found) break;
                     }
-                    if (found) break;
                 }
+
+                if (!found) {
+                    for (let i = 0; i < herbsNonShengXi.length; i++) {
+                        for (const herb of herbsNonShengXi[i]) {
+                            if (herb === herbName) {
+                                price = pricesNonShengXi[i];
+                                found = true;
+                                break;
+                            }
+                        }
+                        if (found) break;
+                    }
+                }
+
+                herbPrices.push(new HerbPrice(herbName, price, quantity));
             }
 
-            herbPrices.push(new HerbPrice(herbName, price, quantity));
+            herbPrices.sort((a, b) => b.price - a.price);
+
+            let result = '';
+            for (const herbPrice of herbPrices) {
+                const priceText = `坊市上架 ${herbPrice.name} ${herbPrice.price} ${herbPrice.quantity}`;
+                result += `
+                <div class="item">
+                    <span>${priceText}</span>
+                    <button class="copy-button" data-text="${priceText}">复制</button>
+                </div>
+            `;
+            }
+
+            return result;
+        }
+        function extractAlchemyContent(text) {
+            const skillRegex = new RegExp(alchemySkills.join("|"), "g");
+            const techniqueRegex = new RegExp(alchemyTechniques.join("|"), "g");
+
+            const skills = text.match(skillRegex) || [];
+            const techniques = text.match(techniqueRegex) || [];
+
+            let result = '<h2></h2>';
+            result += '<div>炼金神通：</div>';
+            result += '<ul>';
+            for (const skill of skills) {
+                result += `<div class="item">炼金${skill}<button class="copy-button" data-text="炼金${skill}">复制</button></div>`;
+            }
+            result += '</ul>';
+
+            result += '<div>炼金功法：</div>';
+            result += '<ul>';
+            for (const technique of techniques) {
+                result += `<div class="item">炼金${technique}<button class="copy-button" data-text="炼金${technique}">复制</button></div>`;
+            }
+            result += '</ul>';
+
+            return result;
         }
 
-        herbPrices.sort((a, b) => b.price - a.price);
-
-        let result = '';
-        for (const herbPrice of herbPrices) {
-            const priceText = `坊市上架 ${herbPrice.name} ${herbPrice.price} ${herbPrice.quantity}`;
-            result += `
-                    <div class="item">
-                        <span>${priceText}</span>
-                        <button class="copy-button" onclick="copyToClipboard('${priceText}')">复制</button>
-                    </div>
-                `;
+        class HerbPrice {
+            constructor(name, price, quantity) {
+                this.name = name;
+                this.price = price;
+                this.quantity = quantity;
+            }
         }
 
-        return result;
+        const herbResults = extractHerbPrices(text);
+        const alchemyResults = extractAlchemyContent(text);
+
+        document.getElementById('herb-info').innerHTML = herbResults;
+        document.getElementById('alchemy-info').innerHTML = alchemyResults;
+
+        document.querySelectorAll('.copy-button').forEach(button => {
+            button.addEventListener('click', function () {
+                const textToCopy = this.getAttribute('data-text');
+                copyToClipboard(textToCopy);
+                showNotification('复制成功');
+            });
+        });
     }
 
     function copyToClipboard(text) {
-        // 创建一个临时的文本域来辅助复制操作
         const tempTextArea = document.createElement('textarea');
         tempTextArea.value = text;
         document.body.appendChild(tempTextArea);
-
-        // 选择并复制文本
         tempTextArea.select();
         document.execCommand('copy');
-
-        // 移除临时文本域
         document.body.removeChild(tempTextArea);
-
-        // 显示复制成功提示
-        const notification = document.getElementById('notification');
-        notification.style.display = 'block';
-        setTimeout(() => {
-            notification.style.display = 'none';
-        }, 2000);
     }
 
     function showNotification(message) {
-        const notification = document.getElementById('notification');
+        let notification = document.getElementById('notification');
+        if (!notification) {
+            notification = document.createElement('div');
+            notification.id = 'notification';
+            notification.style.position = 'absolute';
+            notification.style.bottom = '20px';
+            notification.style.left = '50%';
+            notification.style.transform = 'translateX(-50%)';
+            notification.style.backgroundColor = '#28a745';
+            notification.style.color = '#fff';
+            notification.style.padding = '10px';
+            notification.style.borderRadius = '5px';
+            notification.style.boxShadow = '0 0 10px rgba(0, 0, 0, 0.2)';
+            notification.style.zIndex = '1000';
+            document.body.appendChild(notification);
+        }
         notification.textContent = message;
         notification.style.display = 'block';
         setTimeout(() => {
@@ -236,13 +298,10 @@
         }, 2000); // 2秒后隐藏提示
     }
 
-    class HerbPrice {
-        constructor(name, price, quantity) {
-            this.name = name;
-            this.price = price;
-            this.quantity = quantity;
-        }
-    }
+    document.getElementById('process-button').addEventListener('click', function () {
+        const userInputText = document.getElementById('user-input').value;
+        extractInfo(userInputText);
+    });
 </script>
 </body>
 </html>

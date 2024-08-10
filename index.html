@@ -250,7 +250,7 @@
             return elixirs;
         }
         function extractSkillsAndTechniques(text) {
-            const skillRegex = /(天阶|地阶|玄阶|黄阶|人阶)(下品|上品)?(神通|功法)([^\n]+?):[^\n]*?\s*拥有数量:(\d+)/g;
+            const skillRegex = /(天阶|地阶|玄阶|黄阶|人阶)(下品|上品)?(神通|功法)-([^\n]+?):[^\n]*?\s*拥有数量:(\d+)/g;
 
             const skillsAndTechniques = [];
             let match;

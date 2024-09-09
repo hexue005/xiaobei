@@ -15,6 +15,7 @@
             margin: 0;
             padding: 0 10px;
         }
+
         .container {
             background-color: #fff;
             padding: 20px;
@@ -24,10 +25,12 @@
             max-width: 600px;
             position: relative;
         }
+
         h1 {
             text-align: center;
             margin-bottom: 20px;
         }
+
         textarea {
             width: 100%;
             height: 150px;
@@ -37,6 +40,7 @@
             border-radius: 4px;
             resize: none;
         }
+
         button {
             display: block;
             width: 100%;
@@ -49,9 +53,11 @@
             font-size: 16px;
             margin-bottom: 10px;
         }
+
         button:hover {
             background-color: #0056b3;
         }
+
         .copy-button {
             background-color: #28a745;
             width: 80px;
@@ -66,26 +72,32 @@
             color: #fff;
             display: inline-block;
         }
+
         .copy-button:hover {
             background-color: #218838;
         }
+
         .item {
             margin-bottom: 10px;
             display: flex;
             align-items: center;
             justify-content: space-between;
         }
+
         .item span {
             white-space: nowrap;
         }
+
         @media (max-width: 600px) {
             .container {
                 padding: 10px;
             }
+
             button {
                 padding: 10px;
             }
         }
+
         #notification {
             position: absolute;
             bottom: 20px;
@@ -106,7 +118,7 @@
     <h1>信息提取</h1>
     <textarea id="user-input" placeholder="请输入数据..."></textarea>
     <button id="process-button">提取</button>
-
+    <button id="clear-button">清空</button>
     <h2>药材信息</h2>
     <div id="herb-info"></div>
 
@@ -141,6 +153,7 @@
         const pricesNonShengXi = [1500000, 1900000, 2300000, 2800000, 3200000, 3600000, 4000000];
         const specialHerbs = ["木灵三针花", "鎏鑫天晶草", "离火梧桐芝", "尘磊岩麟果"];
         const specialPrices = [5000000, 5000000, 6000000, 6000000];
+
         function extractHerbPrices(text) {
             const herbPrices = [];
             const namePattern = /名字：([^\n]+?)(?=\s+品级：|$)/g;
@@ -202,6 +215,7 @@
             }
             return result;
         }
+
         function extractAlchemyContent(text) {
             const elixirs = extractElixirs(text);
             const skillsAndTechniques = extractSkillsAndTechniques(text);
@@ -215,7 +229,7 @@
             }
             output += '</ul>';
 
-            const skillTypes = { 神通: [], 功法: [] };
+            const skillTypes = {神通: [], 功法: []};
             for (const item of skillsAndTechniques) {
                 skillTypes[item.type].push(item);
             }
@@ -237,18 +251,19 @@
         }
 
         function extractElixirs(text) {
-            const elixirRegex = /名字：((?!渡厄丹|化劫丹|太上玄门丹|金仙破厄丹|太乙炼髓丹|极品遁一丹|极品至尊丹|九天蕴仙丹|真仙造化丹|大道归一丹|菩提证道丹|太清玉液丹|明心丹|冰心丹|幻心玄丹|天命炼心丹|少阴清灵丹|斩我丹|苦茶子|鬼面炼心丹|陨铁炉|雕花紫铜炉|寒铁铸心炉)[^\n]+?)\s*效果：[^\n]*?\s*拥有数量：(\d+)(?!.*炉)/g;
+            const elixirRegex = /名字：((?!蛋|渡厄丹|化劫丹|太上玄门丹|金仙破厄丹|太乙炼髓丹|极品遁一丹|极品至尊丹|九天蕴仙丹|真仙造化丹|大道归一丹|菩提证道丹|太清玉液丹|明心丹|冰心丹|幻心玄丹|天命炼心丹|少阴清灵丹|斩我丹|苦茶子|鬼面炼心丹|陨铁炉|雕花紫铜炉|寒铁铸心炉)[^\n]+?)\s*效果：[^\n]*?\s*拥有数量：(\d+)(?!.*炉)/g;
 
             const elixirs = [];
             let match;
             while ((match = elixirRegex.exec(text)) !== null) {
                 const name = match[1];
                 const quantity = parseInt(match[2]);
-                elixirs.push({ name, quantity });
+                elixirs.push({name, quantity});
             }
 
             return elixirs;
         }
+
         function extractSkillsAndTechniques(text) {
             const skillRegex = /(天阶|地阶|玄阶|黄阶|人阶)(下品|上品)?(神通|功法)(?:-| )?([^\n]+?):[^\n]*?\s*拥有数量:(\d+)/g;
 
@@ -258,11 +273,12 @@
                 const type = match[3];
                 const name = match[4].trim();
                 const quantity = parseInt(match[5]);
-                skillsAndTechniques.push({ type, name, quantity });
+                skillsAndTechniques.push({type, name, quantity});
             }
 
             return skillsAndTechniques;
         }
+
         class HerbPrice {
             constructor(name, price, quantity) {
                 this.name = name;
@@ -314,6 +330,11 @@
         extractInfo(userInputText);
     });
 
+    document.getElementById('clear-button').addEventListener('click', function () {
+        document.getElementById('user-input').value = '';
+        document.getElementById('herb-info').innerHTML = '';
+        document.getElementById('alchemy-info').innerHTML = '';
+    });
 </script>
 </body>
 </html>

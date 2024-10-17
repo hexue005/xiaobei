@@ -117,6 +117,7 @@
 <div class="container">
     <h1>信息提取</h1>
     <textarea id="user-input" placeholder="请输入数据..."></textarea>
+    <button id="paste-button">粘贴</button>
     <button id="process-button">提取</button>
     <button id="clear-button">清空</button>
     <h2>药材信息</h2>
@@ -334,6 +335,15 @@
         document.getElementById('user-input').value = '';
         document.getElementById('herb-info').innerHTML = '';
         document.getElementById('alchemy-info').innerHTML = '';
+    });
+    document.getElementById('paste-button').addEventListener('click', () => {
+        navigator.clipboard.readText()
+            .then(text => {
+                document.getElementById('user-input').value = text;
+            })
+            .catch(err => {
+                console.error('Could not read text from clipboard: ', err);
+            });
     });
 </script>
 </body>

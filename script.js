@@ -386,3 +386,28 @@ document.getElementById('clear-button2').addEventListener('click', function () {
     document.getElementById('herbValueInput').value = '';
     document.getElementById('result').textContent = '总价值: 0 灵石';
 });
+
+// 监听文本框的输入事件，强制转换为UTF-8编码
+document.getElementById('user-input').addEventListener('input', function (event) {
+    // 获取用户输入的文本
+    let userInputText = event.target.value;
+
+    // 强制转换为UTF-8编码
+    const utf8Text = new TextEncoder().encode(userInputText); // 将输入转换为UTF-8字节数组
+    const decodedText = new TextDecoder('utf-8').decode(utf8Text); // 解码为字符串（确保是有效的UTF-8格式）
+
+    // 更新文本框的值，确保是UTF-8格式
+    event.target.value = decodedText;
+});
+
+// 监听另一个文本框的输入事件
+document.getElementById('herbValueInput').addEventListener('input', function (event) {
+    let herbInputText = event.target.value;
+
+    // 强制转换为UTF-8编码
+    const utf8Text = new TextEncoder().encode(herbInputText); // 将输入转换为UTF-8字节数组
+    const decodedText = new TextDecoder('utf-8').decode(utf8Text); // 解码为字符串
+
+    // 更新文本框的值
+    event.target.value = decodedText;
+});

@@ -352,36 +352,59 @@ function showNotification(message) {
     }, 2000);
 }
 
+// 提示信息
+function showNotification(message) {
+    let notification = document.getElementById('notification');
+    if (!notification) {
+        notification = document.createElement('div');
+        notification.id = 'notification';
+        document.body.appendChild(notification);
+    }
+    notification.textContent = message;
+    notification.style.display = 'block';
+    setTimeout(() => {
+        notification.style.display = 'none';
+    }, 2000);
+}
+
 // 粘贴按钮逻辑
 document.getElementById('paste-button1').addEventListener('click', () => {
     navigator.clipboard.readText()
         .then(text => {
-            document.getElementById('user-input').value = text;
+            // 先处理粘贴内容，移除所有'-'字符
+            const sanitizedText = text.replace(/-/g, '');
+            document.getElementById('user-input').value = sanitizedText;
         })
         .catch(err => {
-            console.error('Could not read text from clipboard: ', err);
+            console.error('无法从剪贴板读取内容: ', err);
         });
 });
+
 document.getElementById('paste-button2').addEventListener('click', () => {
     navigator.clipboard.readText()
         .then(text => {
-            document.getElementById('herbValueInput').value = text;
+            // 先处理粘贴内容，移除所有'-'字符
+            const sanitizedText = text.replace(/-/g, '');
+            document.getElementById('herbValueInput').value = sanitizedText;
         })
         .catch(err => {
             console.error('无法从剪贴板读取内容：', err);
         });
 });
+
 // 提取按钮逻辑
 document.getElementById('process-button').addEventListener('click', function () {
     const userInputText = document.getElementById('user-input').value;
     extractInfo(userInputText);
 });
+
 // 清空按钮逻辑
 document.getElementById('clear-button1').addEventListener('click', function () {
     document.getElementById('user-input').value = '';
     document.getElementById('herb-info').innerHTML = '';
     document.getElementById('alchemy-info').innerHTML = '';
 });
+
 document.getElementById('clear-button2').addEventListener('click', function () {
     document.getElementById('herbValueInput').value = '';
     document.getElementById('result').textContent = '总价值: 0 灵石';

@@ -189,72 +189,6 @@ function extractInfo(text) {
         return result;
     }
 
-    //炼金
-    function extractAlchemyContent(text) {
-        const elixirs = extractElixirs(text);
-        const skillsAndTechniques = extractSkillsAndTechniques(text);
-
-        let output = '<h2></h2>';
-
-        output += '<div>炼金丹药：</div>';
-        output += '<ul>';
-        for (const elixir of elixirs) {
-            output += `<div class="item">炼金${elixir.name} ${elixir.quantity}<button class="copy-button" data-text="炼金${elixir.name} ${elixir.quantity}">复制</button></div>`;
-        }
-        output += '</ul>';
-
-        const skillTypes = {神通: [], 功法: []};
-        for (const item of skillsAndTechniques) {
-            skillTypes[item.type].push(item);
-        }
-
-        output += '<div>炼金神通/功法：</div>';
-        output += '<ul>';
-        for (const skill of skillTypes['神通']) {
-            output += `<div class="item">炼金${skill.name} ${skill.quantity}<button class="copy-button" data-text="炼金${skill.name} ${skill.quantity}">复制</button></div>`;
-        }
-        output += '</ul>';
-
-        output += '<ul>';
-        for (const technique of skillTypes['功法']) {
-            output += `<div class="item">炼金${technique.name} ${technique.quantity}<button class="copy-button" data-text="炼金${technique.name} ${technique.quantity}">复制</button></div>`;
-        }
-        output += '</ul>';
-
-        return output;
-    }
-
-    //炼金丹药
-    function extractElixirs(text) {
-        const elixirRegex = /名字：((?!蛋|渡厄丹|筑基丹|化劫丹|太上玄门丹|金仙破厄丹|太乙炼髓丹|极品遁一丹|极品至尊丹|九天蕴仙丹|真仙造化丹|大道归一丹|菩提证道丹|太清玉液丹|陨铁炉|雕花紫铜炉|寒铁铸心炉)[^\n]+?)\s*效果：[^\n]*?\s*拥有数量：(\d+)(?!.*炉)/g;
-
-        const elixirs = [];
-        let match;
-        while ((match = elixirRegex.exec(text)) !== null) {
-            const name = match[1];
-            const quantity = parseInt(match[2]);
-            elixirs.push({name, quantity});
-        }
-
-        return elixirs;
-    }
-
-    //炼金神通功法
-    function extractSkillsAndTechniques(text) {
-        const skillRegex = /(天阶|地阶|玄阶|黄阶|人阶)(下品|上品)?(神通|功法)(?:-| )?([^\n]+?):[^\n]*?\s*拥有数量:(\d+)/g;
-
-        const skillsAndTechniques = [];
-        let match;
-        while ((match = skillRegex.exec(text)) !== null) {
-            const type = match[3];
-            const name = match[4].trim();
-            const quantity = parseInt(match[5]);
-            skillsAndTechniques.push({type, name, quantity});
-        }
-
-        return skillsAndTechniques;
-    }
-
     class HerbPrice {
         constructor(name, price, quantity) {
             this.name = name;
@@ -263,12 +197,8 @@ function extractInfo(text) {
         }
     }
 
-    const herbResults = extractHerbPrices(text);
-    const alchemyResults = extractAlchemyContent(text);
-
-    document.getElementById('herb-info').innerHTML = herbResults;
-    document.getElementById('alchemy-info').innerHTML = alchemyResults;
-
+    document.getElementById('herb-info').innerHTML = extractHerbPrices(text);
+    //复制按钮逻辑
     document.querySelectorAll('.copy-button').forEach(button => {
         button.addEventListener('click', function () {
             const textToCopy = this.getAttribute('data-text');
@@ -371,9 +301,8 @@ function showNotification(message) {
 document.getElementById('paste-button1').addEventListener('click', () => {
     navigator.clipboard.readText()
         .then(text => {
-            // 先处理粘贴内容，移除所有'-'字符
-            const sanitizedText = text.replace(/-/g, '');
-            document.getElementById('user-input').value = sanitizedText;
+            // 处理粘贴内容，移除所有'-'字符
+            document.getElementById('user-input').value = text.replace(/-/g, '');
         })
         .catch(err => {
             console.error('无法从剪贴板读取内容: ', err);
@@ -383,9 +312,8 @@ document.getElementById('paste-button1').addEventListener('click', () => {
 document.getElementById('paste-button2').addEventListener('click', () => {
     navigator.clipboard.readText()
         .then(text => {
-            // 先处理粘贴内容，移除所有'-'字符
-            const sanitizedText = text.replace(/-/g, '');
-            document.getElementById('herbValueInput').value = sanitizedText;
+            // 处理粘贴内容，移除所有'-'字符
+            document.getElementById('herbValueInput').value = text.replace(/-/g, '');
         })
         .catch(err => {
             console.error('无法从剪贴板读取内容：', err);

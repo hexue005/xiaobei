@@ -12,12 +12,13 @@
   <div id="switchBar">
     <button onclick="switchModule('infoExtraction')">信息提取</button>
     <button onclick="switchModule('valueCalculation')">价值计算</button>
+    <button onclick="switchModule('priceList')">药材价格表</button>
   </div>
 
   <!-- 信息提取模块 -->
   <div id="infoExtraction" class="module active">
     <h2>信息提取</h2>
-    <p style="text-align: center; color: #888; margin-top: 20px;">有问题找qq:2367966612</p>
+    <p style="text-align: center; color: #888; margin-top: 20px;">有问题或建议找qq:2367966612</p>
     <p style="text-align: center; color: #888; margin-top: 20px;">与小北对话输入”药材背包“后复制回复内容即可提取</p>
     <p style="text-align: center; color: #888; margin-top: 20px;">炼金物品请使用小北内置的批量炼金，注意手机无法点击按钮（建议反馈北澪）</p>
     <label for="user-input"></label><textarea id="user-input" placeholder="请输入数据..."></textarea><br>
@@ -27,13 +28,12 @@
 
     <h2>药材信息</h2>
     <div id="herb-info"></div>
-
   </div>
 
   <!-- 价值计算模块 -->
   <div id="valueCalculation" class="module">
     <h2>药材总价值计算</h2>
-    <p style="text-align: center; color: #888; margin-top: 20px;">有问题找qq:2367966612</p>
+    <p style="text-align: center; color: #888; margin-top: 20px;">有问题或建议找qq:2367966612</p>
     <p style="text-align: center; color: #888; margin-top: 20px;">与小北对话输入“药材“后复制回复内容即可提取</p>
     <p style="text-align: center; color: #888; margin-top: 20px;">当前功能已适配手机端</p>
     <label for="herbValueInput"></label><textarea id="herbValueInput" placeholder="粘贴药材信息..."></textarea><br>
@@ -42,6 +42,16 @@
     <button id="clear-button2">清空</button>
     <p id="result">总价值: 0 灵石</p>
   </div>
+
+  <!-- 药材价格模块 -->
+  <div id="priceList" class="module">
+    <h2>药材价格表</h2>
+    <p style="text-align: center; color: #888; margin-top: 20px;">一品药材200w 二品药材240w</p>
+    <p style="text-align: center; color: #888; margin-top: 20px;">三品普通药材150w 四品普通药材190w 五品普通药材230w 六品普通药材280w 七品普通药材320w 八品普通药材360w 九品普通药材400w </p>
+    <p style="text-align: center; color: #888; margin-top: 20px;">三品生息380w 四品生息460w 五品生息540w 六品生息640w 七品生息720w 八品生息800w 九品生息880w </p>
+    <p style="text-align: center; color: #888; margin-top: 20px;">木灵三针花1000w 鎏鑫天晶草1000w 离火梧桐芝1200w 尘磊岩麟果1200w</p>
+  </div>
+  
 </div>
 <script src="script.js"></script>
 <!-- 谷歌数据 -->
